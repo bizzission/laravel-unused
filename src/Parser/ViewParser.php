@@ -2,6 +2,7 @@
 
 namespace TypeHints\Unused\Parser;
 
+use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
 use TypeHints\Unused\Parser\Action\ParserActionInterface;
 
@@ -188,6 +189,11 @@ class ViewParser implements ParserInterface
 
         if (($position = strpos($view, ',')) !== false) {
             $view = substr($view, 0, $position);
+        }
+        
+        if (Str::startsWith($view, 'config(')) {
+            $configKey = substr($view, 8, strlen($view) - 9);
+            $view = \Config::get($configKey);
         }
 
         foreach ($this->ignoredStrings as $string) {
